@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Task {
   #[serde(default)]
-  pub shell: Vec<String>,
+  pub cmd: Vec<String>,
 
   #[serde(default)]
   pub deps: Vec<String>,
@@ -24,7 +24,7 @@ impl TaskConfig {
 
     // Recursively find all tasks
     for (name, task) in &self.tasks {
-      if !task.shell.is_empty() {
+      if !task.cmd.is_empty() {
         all_tasks.push(name.to_owned());
       }
       all_tasks.extend(Self::get_subtasks_with_prefix(task, name));
