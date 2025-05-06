@@ -81,10 +81,19 @@ impl TaskConfig {
       // Recursively find dependencies of subtasks
       for subtask in &task.subtasks {
         let subtask_name = format!("{}.{}", path, subtask.0);
-        deps.extend(self.get_deps(subtask_name));
+        deps.extend(self.get_deps(&subtask_name));
+        deps.push(subtask_name.to_owned());
       }
     }
 
-    deps
+    // Dedupe
+    let mut deduped = vec![];
+    for dep in deps {
+      if !deduped.contains(&dep) {
+        deduped.push(dep);
+      }
+    }
+
+    deduped
   }
 }
