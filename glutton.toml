@@ -16,9 +16,11 @@
 shell = ["cargo clean"]
 
 [tasks.dev.build]
+deps = ["clean"]
 shell = ["cargo build"]
 
 [tasks.prod.build]
+deps = ["clean", "dev.build"]
 shell = ["cargo build --release"]
 
 [tasks.install]

@@ -20,7 +20,47 @@ pub struct TaskConfig {
 }
 
 impl TaskConfig {
-  pub fn find_task(&self, path: String) -> Option<&Task> {
+  pub fn get_all_tasks(&self) -> Vec<String> {
+    let mut all_tasks = vec![];
+
+    // Recursively find all tasks
+    for (name, task) in &self.tasks {
+      if !task.shell.is_empty() {
+        all_tasks.push(name.to_owned());
+      }
+      all_tasks.extend(self.get_subtasks_with_prefix(task, name));
+    }
+
+    all_tasks
+  }
+
+  fn get_subtasks_with_prefix(&self, task: &Task, prefix: &str) -> Vec<String> {
+    let mut subtasks = vec![];
+
+    // Recursively find subtasks with prefix
+    for (name, subtask) in &task.subtasks {
+      let full_name = format!("{}.{}", prefix, name);
+      subtasks.push(full_name.clone());
+      subtasks.extend(self.get_subtasks_with_prefix(subtask, &full_name));
+    }
+
+    subtasks
+  }
+
+  pub fn get_subtasks(&self, task: &Task) -> Vec<String> {
+    let mut subtasks = vec![];
+
+    // Recursively find subtasks
+    for (name, subtask) in &task.subtasks {
+      subtasks.push(name.to_owned());
+      subtasks.extend(self.get_subtasks(subtask));
+    }
+
+    subtasks
+  }
+
+  pub fn find_task(&self, path: impl AsRef<str>) -> Option<&Task> {
+    let path = path.as_ref();
     let parts = path.split('.').collect::<Vec<_>>();
     let len = parts.len();
 
@@ -38,5 +78,22 @@ impl TaskConfig {
     }
 
     None
+  }
+
+  pub fn get_deps(&self, task: &Task) -> Vec<String> {
+    let mut deps = vec![];
+
+    // Recursively find dependencies
+    for dep in &task.deps {
+      if let Some(subtask) = self.find_task(dep.to_owned()) {
+        deps.push(dep.to_owned());
+        deps.extend(self.get_deps(subtask));
+      } else {
+        deps.push(dep.to_owned());
+      }
+    }
+
+    deps.reverse();
+    deps
   }
 }

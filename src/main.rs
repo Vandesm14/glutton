@@ -35,6 +35,18 @@ fn main() {
     // Find the task by name
     if let Some(task) = config.find_task(query) {
       println!("Found task: {:#?}", task);
+      println!();
+
+      // Print the dependencies
+      let deps = config.get_deps(task);
+      if !deps.is_empty() {
+        println!("Dependencies:");
+        for dep in deps {
+          println!("  {}", dep);
+        }
+      } else {
+        println!("No dependencies found.");
+      }
     } else {
       println!("Task not found");
     }
@@ -42,8 +54,8 @@ fn main() {
     // Print the available tasks
     if !config.tasks.is_empty() {
       println!("Available tasks:");
-      for (name, task) in config.tasks.iter() {
-        println!("  {}: {:#?}", name, task);
+      for name in config.get_all_tasks() {
+        println!("  {}", name);
       }
     } else {
       println!("No tasks found in the config file.");
