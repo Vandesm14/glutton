@@ -57,6 +57,9 @@ fn main() {
       for name in config.get_all_tasks() {
         println!("  {}", name);
       }
+
+      println!();
+      println!("{:#?}", config);
     } else {
       println!("No tasks found in the config file.");
     }

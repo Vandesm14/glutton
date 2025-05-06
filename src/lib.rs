@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-
+use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -11,12 +10,12 @@ pub struct Task {
   pub deps: Vec<String>,
 
   #[serde(flatten)]
-  pub subtasks: HashMap<String, Task>,
+  pub subtasks: IndexMap<String, Task>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TaskConfig {
-  pub tasks: HashMap<String, Task>,
+  pub tasks: IndexMap<String, Task>,
 }
 
 impl TaskConfig {
