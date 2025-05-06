@@ -1,0 +1,23 @@
+# [tasks.build-client]
+# shell = ["pnpm i", "pnpm client-web:build"]
+
+# [tasks.build-linux]
+# deps = ["build-client"]
+# shell = ["cargo build --release --target x86_64-unknown-linux-gnu"]
+
+# [tasks.build-windows]
+# deps = ["build-client"]
+# shell = ["cargo build --release --target x86_64-pc-windows-gnu"]
+
+# [tasks.build]
+# deps = ["build-linux", "build-windows"]
+
+[tasks.clean]
+shell = ["cargo clean"]
+
+[tasks.build]
+shell = ["cargo clean"]
+
+[tasks.install]
+deps = ["build"]
+shell = ["cargo install --path ."]
