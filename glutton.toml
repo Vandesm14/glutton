@@ -20,9 +20,9 @@ deps = ["clean"]
 shell = ["cargo build"]
 
 [tasks.prod.build]
-deps = ["clean", "dev.build"]
+deps = ["clean"]
 shell = ["cargo build --release"]
 
 [tasks.install]
-deps = ["prod.build"]
+deps = ["dev.build", "prod.build"]
 shell = ["cargo install --path ."]

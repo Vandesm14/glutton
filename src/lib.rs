@@ -28,32 +28,32 @@ impl TaskConfig {
       if !task.shell.is_empty() {
         all_tasks.push(name.to_owned());
       }
-      all_tasks.extend(self.get_subtasks_with_prefix(task, name));
+      all_tasks.extend(Self::get_subtasks_with_prefix(task, name));
     }
 
     all_tasks
   }
 
-  fn get_subtasks_with_prefix(&self, task: &Task, prefix: &str) -> Vec<String> {
+  fn get_subtasks_with_prefix(task: &Task, prefix: &str) -> Vec<String> {
     let mut subtasks = vec![];
 
     // Recursively find subtasks with prefix
     for (name, subtask) in &task.subtasks {
       let full_name = format!("{}.{}", prefix, name);
       subtasks.push(full_name.clone());
-      subtasks.extend(self.get_subtasks_with_prefix(subtask, &full_name));
+      subtasks.extend(Self::get_subtasks_with_prefix(subtask, &full_name));
     }
 
     subtasks
   }
 
-  pub fn get_subtasks(&self, task: &Task) -> Vec<String> {
+  pub fn get_subtasks(task: &Task) -> Vec<String> {
     let mut subtasks = vec![];
 
     // Recursively find subtasks
     for (name, subtask) in &task.subtasks {
       subtasks.push(name.to_owned());
-      subtasks.extend(self.get_subtasks(subtask));
+      subtasks.extend(Self::get_subtasks(subtask));
     }
 
     subtasks
@@ -85,15 +85,14 @@ impl TaskConfig {
 
     // Recursively find dependencies
     for dep in &task.deps {
-      if let Some(subtask) = self.find_task(dep.to_owned()) {
-        deps.push(dep.to_owned());
+      if let Some(subtask) = self.find_task(dep) {
         deps.extend(self.get_deps(subtask));
+        deps.push(dep.to_owned());
       } else {
         deps.push(dep.to_owned());
       }
     }
 
-    deps.reverse();
     deps
   }
 }
