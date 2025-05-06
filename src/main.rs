@@ -5,6 +5,8 @@ use std::path::PathBuf;
 #[derive(Parser)]
 #[command(author, version, about)]
 struct Args {
+  query: Option<String>,
+
   /// Path to config file
   #[arg(short = 'c', long = "config", default_value = "glutton.toml")]
   config: PathBuf,
@@ -29,13 +31,22 @@ fn main() {
       )
     });
 
-  // Print the available tasks
-  if !config.tasks.is_empty() {
-    println!("Available tasks:");
-    for task_name in config.tasks.keys() {
-      println!("  {}", task_name);
+  if let Some(query) = args.query {
+    // Find the task by name
+    if let Some(task) = config.find_task(query) {
+      println!("Found task: {:#?}", task);
+    } else {
+      println!("Task not found");
     }
   } else {
-    println!("No tasks found in the config file.");
+    // Print the available tasks
+    if !config.tasks.is_empty() {
+      println!("Available tasks:");
+      for (name, task) in config.tasks.iter() {
+        println!("  {}: {:#?}", name, task);
+      }
+    } else {
+      println!("No tasks found in the config file.");
+    }
   }
 }
