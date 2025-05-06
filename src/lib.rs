@@ -47,18 +47,6 @@ impl TaskConfig {
     subtasks
   }
 
-  pub fn get_subtasks(task: &Task) -> Vec<String> {
-    let mut subtasks = vec![];
-
-    // Recursively find subtasks
-    for (name, subtask) in &task.subtasks {
-      subtasks.push(name.to_owned());
-      subtasks.extend(Self::get_subtasks(subtask));
-    }
-
-    subtasks
-  }
-
   pub fn find_task(&self, path: impl AsRef<str>) -> Option<&Task> {
     let path = path.as_ref();
     let parts = path.split('.').collect::<Vec<_>>();
