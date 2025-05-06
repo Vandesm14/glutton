@@ -4,11 +4,21 @@ cmd = ["pnpm", "install"]
 [tasks.build.client.build]
 cmd = ["pnpm", "client-web:build"]
 
-[tasks.build.linux]
+[tasks.prod.build.linux]
 cmd = ["cargo", "build", "--release", "--target", "x86_64-unknown-linux-gnu"]
 
-[tasks.build.windows]
+[tasks.prod.build.windows]
 cmd = ["cargo", "build", "--release", "--target", "x86_64-pc-windows-gnu"]
+
+[tasks.dev.build.linux]
+cmd = ["cargo", "build", "--target", "x86_64-unknown-linux-gnu"]
+
+[tasks.dev.build.windows]
+cmd = ["cargo", "build", "--target", "x86_64-pc-windows-gnu"]
+
+[tasks.dev.run]
+deps = ["build"]
+cmd = ["cargo", "run"]
 
 # [tasks.clean]
 # cmd = ["cargo clean"]

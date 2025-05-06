@@ -67,16 +67,21 @@ impl TaskConfig {
     None
   }
 
-  pub fn get_deps(&self, task: &Task) -> Vec<String> {
+  pub fn get_deps(&self, path: impl AsRef<str>) -> Vec<String> {
     let mut deps = vec![];
 
-    // Recursively find dependencies
-    for dep in &task.deps {
-      if let Some(subtask) = self.find_task(dep) {
-        deps.extend(self.get_deps(subtask));
+    let path = path.as_ref();
+    if let Some(task) = self.find_task(path) {
+      // Recursively find dependencies
+      for dep in &task.deps {
+        deps.extend(self.get_deps(dep));
         deps.push(dep.to_owned());
-      } else {
-        deps.push(dep.to_owned());
+      }
+
+      // Recursively find dependencies of subtasks
+      for subtask in &task.subtasks {
+        let subtask_name = format!("{}.{}", path, subtask.0);
+        deps.extend(self.get_deps(subtask_name));
       }
     }
 

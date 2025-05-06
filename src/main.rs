@@ -33,12 +33,12 @@ fn main() {
 
   if let Some(query) = args.query {
     // Find the task by name
-    if let Some(task) = config.find_task(query) {
+    if let Some(task) = config.find_task(&query) {
       println!("Found task: {:#?}", task);
       println!();
 
       // Print the dependencies
-      let deps = config.get_deps(task);
+      let deps = config.get_deps(query);
       if !deps.is_empty() {
         println!("Dependencies:");
         for dep in deps {
